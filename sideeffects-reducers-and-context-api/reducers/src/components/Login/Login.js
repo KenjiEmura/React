@@ -4,47 +4,47 @@ import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
 
-const emailReducer = (state, action) => {
+const reducer = (state, action) => {
   if (action.type === "USER_INPUT") {
     return {
       value: action.val,
-      isValid: action.val.includes("@"),
+      isValid: action.verifier(action.val),
     };
   }
   if (action.type === "INPUT_BLUR") {
     return {
       value: state.value,
-      isValid: state.value.includes("@"),
+      isValid: action.verifier(state.value),
     };
   }
   return { value: "", isValid: false };
 };
 
-const passwordReducer = (state, action) => {
-  if (action.type === "USER_INPUT") {
-    return {
-      value: action.val,
-      isValid: action.val.trim().length > 6,
-    };
+const emailVerifier = (input) => {
+  if (input.includes("@")) {
+    return true;
+  } else {
+    return false;
   }
-  if (action.type === "INPUT_BLUR") {
-    return {
-      value: state.value,
-      isValid: state.value.trim().length > 6,
-    };
+};
+
+const passwordVerifier = (input) => {
+  if (input.trim().length > 6) {
+    return true;
+  } else {
+    return false;
   }
-  return { value: "", isValid: false };
 };
 
 const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
-  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+  const [emailState, dispatchEmail] = useReducer(reducer, {
     value: "",
     isValid: null,
   });
 
-  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+  const [passwordState, dispatchPassword] = useReducer(reducer, {
     value: "",
     isValid: null,
   });
@@ -61,6 +61,7 @@ const Login = (props) => {
     dispatchEmail({
       type: "USER_INPUT",
       val: event.target.value,
+      verifier: emailVerifier,
     });
 
     setFormIsValid(emailState.isValid && passwordState.isValid);
@@ -70,17 +71,18 @@ const Login = (props) => {
     dispatchPassword({
       type: "USER_INPUT",
       val: event.target.value,
+      verifier: passwordVerifier,
     });
 
     setFormIsValid(emailState.isValid && passwordState.isValid);
   };
 
   const validateEmailHandler = () => {
-    dispatchEmail({ type: "INPUT_BLUR" });
+    dispatchEmail({ type: "INPUT_BLUR", verifier: emailVerifier });
   };
 
   const validatePasswordHandler = () => {
-    dispatchPassword({ type: "INPUT_BLUR" });
+    dispatchPassword({ type: "INPUT_BLUR", verifier: passwordVerifier });
   };
 
   const submitHandler = (event) => {
