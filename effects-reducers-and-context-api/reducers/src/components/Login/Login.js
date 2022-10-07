@@ -49,9 +49,6 @@ const Login = (props) => {
     isValid: null,
   });
 
-  // const { isValid: emailIsValid } = emailState;
-  // const { isValid: passwordIsValid } = passwordState;
-
   useEffect(() => {
     const timer = setTimeout(() => {
       console.log("Checking for validity inside timer");
