@@ -1,8 +1,15 @@
+import Header from "./components/Layout/Header";
+import Meals from "./components/Meals/Meals";
+
 function App() {
   return (
-    <div>
-      <h2>Let's get started!</h2>
-    </div>
+    <>
+      <Header />
+      <main>
+        <Meals />
+        <h1>TEST</h1>
+      </main>
+    </>
   );
 }
 
