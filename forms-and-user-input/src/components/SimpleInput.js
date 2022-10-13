@@ -1,100 +1,69 @@
-import { useState } from "react";
+import useInput from "../hooks/use-input";
 
 const SimpleInput = (props) => {
-  // Name field
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredNameWasTouched, setEnteredNameWasTouched] = useState(false);
+  const {
+    value: enteredName,
+    isValid: enteredNameIsValid,
+    showError: nameInputShowsError,
+    inputFieldClasses: nameFieldClasses,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    resetInput: resetName,
+  } = useInput((value) => value.trim() !== "");
 
-  const enteredNameIsValid = enteredName.trim() !== "";
-  const shouldShowErrorInNameField =
-    !enteredNameIsValid && enteredNameWasTouched;
-  const nameInputClasses = `form-control ${
-    shouldShowErrorInNameField ? "invalid" : ""
-  }`;
-
-  const nameInputChangeHandler = (event) => {
-    setEnteredNameWasTouched(true);
-    setEnteredName(event.target.value);
-  };
-
-  const nameInputBlurHandler = () => {
-    setEnteredNameWasTouched(true);
-  };
-
-  // Email field
-  const [enteredMail, setEnteredMail] = useState("");
-  const [enteredMailWasTouched, setEnteredMailWasTouched] = useState(false);
-
-  const errorToShowInMailField = enteredMailWasTouched
-    ? enteredMail.length < 5
-      ? "Please enter a mail with at least 5 characters"
-      : !enteredMail.includes("@")
-      ? "The email must contain '@'"
-      : null
-    : null;
-
-  console.log(errorToShowInMailField);
-  const shouldShowErrorInMailField =
-    errorToShowInMailField && enteredMailWasTouched;
-  const mailInputClasses = `form-control ${
-    shouldShowErrorInMailField ? "invalid" : ""
-  }`;
-
-  const mailInputChangeHandler = (event) => {
-    setEnteredMailWasTouched(true);
-    setEnteredMail(event.target.value);
-  };
-
-  const mailInputBlurHandler = () => {
-    setEnteredMailWasTouched(true);
-  };
+  const {
+    value: enteredEmail,
+    isValid: enteredEmailIsValid,
+    showError: emailInputShowsError,
+    inputFieldClasses: emailFieldClasses,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    resetInput: resetEmail,
+  } = useInput((value) => value.includes("@"));
 
   // Form validation and submission
   let formIsValid = false;
-  if (enteredNameIsValid && !errorToShowInMailField) {
+  if (enteredNameIsValid && enteredEmailIsValid) {
     formIsValid = true;
   }
 
   const formSumbissionHandler = (event) => {
     event.preventDefault();
-    setEnteredNameWasTouched(true);
     if (!formIsValid) {
       return;
     }
     console.log("Name: ", enteredName.trim());
-    console.log("Email: ", enteredMail.trim());
-    setEnteredName("");
-    setEnteredNameWasTouched(false);
-    setEnteredMail("");
-    setEnteredMailWasTouched(false);
+    console.log("Email: ", enteredEmail.trim());
+    resetName();
+    resetEmail();
   };
 
   return (
     <form onSubmit={formSumbissionHandler}>
-      <div className={nameInputClasses}>
+      <div className={nameFieldClasses}>
         <label htmlFor="name">Your Name</label>
         <input
           type="text"
           id="name"
-          onChange={nameInputChangeHandler}
-          onBlur={nameInputBlurHandler}
+          onChange={nameChangeHandler}
+          onBlur={nameBlurHandler}
           value={enteredName}
         />
-        {shouldShowErrorInNameField && (
+        {nameInputShowsError && (
           <p className="error-text">Name must not be empty</p>
         )}
       </div>
-      <div className={mailInputClasses}>
+      <div className={emailFieldClasses}>
         <label htmlFor="email">Your email</label>
         <input
           type="email"
           id="email"
-          onChange={mailInputChangeHandler}
-          onBlur={mailInputBlurHandler}
-          value={enteredMail}
+          onChange={emailChangeHandler}
+          onBlur={emailBlurHandler}
+          value={enteredEmail}
         />
-        {shouldShowErrorInMailField && (
-          <p className="error-text">{errorToShowInMailField}</p>
+        {emailInputShowsError && (
+          <p className="error-text">Email should contain "@"</p>
         )}
       </div>
       <div className="form-actions">
