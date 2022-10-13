@@ -1,29 +1,44 @@
-import { useState } from "react";
+import { useReducer } from "react";
+
+const initialInputState = {
+  value: "",
+  isTouched: false,
+};
+
+const inputStateReducer = (state, action) => {
+  if (action.type === "UPDATE_INPUT_VALUE") {
+    return { value: action.val, isTouched: state.isTouched };
+  } else if (action.type === "CHANGE_TOUCH_STATE") {
+    return { value: state.value, isTouched: action.val };
+  } else {
+    return { value: "", isTouched: false };
+  }
+};
 
 const useInput = (validateValue) => {
-  const [enteredValue, setEnteredValue] = useState("");
-  const [enteredValueWasTouched, setEnteredValueWasTouched] = useState(false);
+  const [inputState, dispatch] = useReducer(
+    inputStateReducer,
+    initialInputState
+  );
 
-  const valueIsValid = validateValue(enteredValue);
-  const showError = !valueIsValid && enteredValueWasTouched;
+  const valueIsValid = validateValue(inputState.value);
+  const showError = !valueIsValid && inputState.isTouched;
   const inputFieldClasses = `form-control ${showError ? "invalid" : ""}`;
 
   const valueChangeHandler = (event) => {
-    setEnteredValueWasTouched(true);
-    setEnteredValue(event.target.value);
+    dispatch({ type: "UPDATE_INPUT_VALUE", val: event.target.value });
   };
 
   const inputBlurHandler = () => {
-    setEnteredValueWasTouched(true);
+    dispatch({ type: "CHANGE_TOUCH_STATE", val: true });
   };
 
   const resetInput = () => {
-    setEnteredValue("");
-    setEnteredValueWasTouched(false);
+    dispatch({ type: "RESET_FIELD" });
   };
 
   return {
-    value: enteredValue,
+    value: inputState.value,
     isValid: valueIsValid,
     showError,
     inputFieldClasses,
