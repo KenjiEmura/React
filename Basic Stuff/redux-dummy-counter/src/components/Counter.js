@@ -1,8 +1,17 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 
+import { counterActions } from "../store";
 import classes from "./Counter.module.css";
 
 const Counter = () => {
+  // ↓ This state is just to test that React is included with the redux toolkit package
+  const [isShown, setIsShown] = useState(true);
+  const visibilityHandler = () => {
+    setIsShown(!isShown);
+  };
+
+  // ↓ Redux state management ↓
   const dispatch = useDispatch();
   const counter = useSelector((state) => {
     return state.counter;
@@ -11,18 +20,18 @@ const Counter = () => {
     return state.showCounter;
   });
 
-  const toggleCounterHandler = () => {
-    dispatch({ type: "toggleVisibility" });
-  };
-
   const incrementHandler = () => {
-    dispatch({ type: "increment" });
+    dispatch(counterActions.increment());
   };
   const increaseHandler = (amount) => {
-    dispatch({ type: "increase", amount });
+    dispatch(counterActions.increase(amount));
   };
   const decrementHandler = () => {
-    dispatch({ type: "decrement" });
+    dispatch(counterActions.decrement());
+  };
+
+  const toggleCounterVisibilityHandler = () => {
+    dispatch(counterActions.toggleVisibility());
   };
 
   return (
@@ -34,7 +43,9 @@ const Counter = () => {
         <button onClick={increaseHandler.bind(null, 5)}>Increse by 5</button>
         <button onClick={decrementHandler}>Decrement</button>
       </div>
-      <button onClick={toggleCounterHandler}>Toggle Counter</button>
+      <button onClick={toggleCounterVisibilityHandler}>
+        Toggle Counter Visibility
+      </button>
     </main>
   );
 };
