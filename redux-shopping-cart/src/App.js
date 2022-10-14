@@ -6,7 +6,7 @@ import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 
-import { sendCardData } from "./store/cart-slice";
+import { fetchCartData, sendCardData } from "./store/cart-actions";
 
 let isLoadedForTheFirstTime = true;
 
@@ -17,11 +17,17 @@ const App = () => {
   const notification = useSelector((state) => state.ui.notification);
 
   useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (isLoadedForTheFirstTime) {
       isLoadedForTheFirstTime = false;
       return;
     }
-    dispatch(sendCardData(cartData));
+    if (cartData.changed) {
+      dispatch(sendCardData(cartData));
+    }
   }, [cartData, dispatch]);
   return (
     <>
