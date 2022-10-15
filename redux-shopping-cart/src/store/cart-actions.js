@@ -2,7 +2,7 @@ import { uiActions } from "./ui-slice";
 import { cartActions } from "./cart-slice";
 
 const BACKEND_ENDPOINT =
-  "https://react-dummy-project-44c2c-default-rtdb.asia-southeast1.firebasedatabase.app/cart.json";
+  "https://react-dummy-project.firebasedatabase.app/cart.json";
 
 const NOTIFICATION_CLEAR_TIME = 2500;
 

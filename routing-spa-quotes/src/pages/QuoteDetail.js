@@ -1,11 +1,5 @@
 import { useEffect } from "react";
-import {
-  Route,
-  useParams,
-  Link,
-  useRouteMatch,
-  // useLocation,
-} from "react-router-dom";
+import { Route, useParams, Link, useRouteMatch } from "react-router-dom";
 
 import Comments from "../components/comments/Comments";
 import HighlightedQuote from "../components/quotes/HighlightedQuote";
@@ -20,6 +14,10 @@ const QuoteDetail = () => {
   const match = useRouteMatch();
   const params = useParams();
 
+  // ↓ 🤷🏻‍♂️
+  const commentsRoute = `${match.path}/comments`;
+  const commentsLink = `${match.url}/comments`;
+
   const {
     sendRequest: fetchQuote,
     status,
@@ -30,13 +28,6 @@ const QuoteDetail = () => {
   useEffect(() => {
     fetchQuote(params.quoteId);
   }, [fetchQuote, params.quoteId]);
-
-  const commentsUrl = `${match.url}/comments`;
-
-  // const commentsUrl = `${location.pathname}/comments`;
-  // console.log("Location: ", location);
-  // console.log("Route match: ", match);
-  // console.log("commentsUrl: ", commentsUrl);
 
   if (status === "pending") {
     return (
@@ -59,12 +50,12 @@ const QuoteDetail = () => {
       <HighlightedQuote text={quote.text} author={quote.author} />
       <Route path={match.path} exact>
         <div className="centered">
-          <Link className="btn--flat" to={commentsUrl}>
+          <Link className="btn--flat" to={commentsLink}>
             Load Comments
           </Link>
         </div>
       </Route>
-      <Route path={commentsUrl}>
+      <Route path={commentsRoute}>
         <Comments />
       </Route>
     </>

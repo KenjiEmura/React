@@ -13,7 +13,7 @@ const NewTask = (props) => {
 
   const enterTaskHandler = (taskText) => {
     const requestConfig = {
-      url: "https://react-dummy-project-44c2c-default-rtdb.asia-southeast1.firebasedatabase.app/tasks.json",
+      url: "https://react-dummy-project.firebasedatabase.app/tasks.json",
       method: "POST",
       body: { text: taskText },
       headers: {
