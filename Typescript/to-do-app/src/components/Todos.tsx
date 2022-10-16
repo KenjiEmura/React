@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import classes from "./Todos.module.css";
 
 // Data models
 import Todo from "../models/todo";
@@ -6,16 +7,17 @@ import Todo from "../models/todo";
 // Components
 import TodoItem from "./TodoItem";
 
-type TodosProps = {
+type todosProps = {
   items: Todo[];
   children?: ReactNode;
+  removeTodo: (id: string) => void;
 };
 
-const Todos = (props: TodosProps) => {
+const Todos = (props: todosProps) => {
   return (
-    <ul>
+    <ul className={classes.todos}>
       {props.items.map((todo) => (
-        <TodoItem key={todo.id} text={todo.text} />
+        <TodoItem key={todo.id} todo={todo} removeTodo={props.removeTodo} />
       ))}
     </ul>
   );
