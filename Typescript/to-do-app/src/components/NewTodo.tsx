@@ -1,11 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
+import TodosContext from "../store/todos-context";
 import classes from "./NewTodo.module.css";
 
-type newTodoProps = {
-  onAddTodo: (text: string) => void;
-};
-
-const NewTodo = (props: newTodoProps) => {
+const NewTodo = () => {
+  const todoCtx = useContext(TodosContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const submitHandler = (event: React.FormEvent) => {
@@ -18,7 +16,7 @@ const NewTodo = (props: newTodoProps) => {
     }
 
     // Add the new todo
-    props.onAddTodo(enteredText!);
+    todoCtx.addTodo(enteredText!);
   };
 
   return (

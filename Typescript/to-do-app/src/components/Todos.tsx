@@ -1,23 +1,17 @@
-import { ReactNode } from "react";
+import { useContext } from "react";
 import classes from "./Todos.module.css";
-
-// Data models
-import Todo from "../models/todo";
+import TodosContext from "../store/todos-context";
 
 // Components
 import TodoItem from "./TodoItem";
 
-type todosProps = {
-  items: Todo[];
-  children?: ReactNode;
-  removeTodo: (id: string) => void;
-};
+const Todos = () => {
+  const todoCtx = useContext(TodosContext);
 
-const Todos = (props: todosProps) => {
   return (
     <ul className={classes.todos}>
-      {props.items.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} removeTodo={props.removeTodo} />
+      {todoCtx.items.map((todo) => (
+        <TodoItem key={todo.id} todo={todo} />
       ))}
     </ul>
   );
