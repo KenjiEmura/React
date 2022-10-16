@@ -1,45 +1,51 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+  useNavigation,
+  useActionData,
+  redirect,
+} from "react-router-dom";
 
-import NewPostForm from '../components/NewPostForm';
-import { savePost } from '../util/api';
+import NewPostForm from "../components/NewPostForm";
+import { savePost } from "../util/api";
 
 function NewPostPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState();
+  const data = useActionData();
   const navigate = useNavigate();
+  const navigation = useNavigation();
 
-  async function submitHandler(event) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const formData = new FormData(event.target);
-      const post = {
-        title: formData.get('title'),
-        body: formData.get('post-text'),
-      };
-      await savePost(post);
-      navigate('/');
-    } catch (err) {
-      setError(err);
-    }
-    setIsSubmitting(false);
-  }
+  console.log("data: ", data);
 
   function cancelHandler() {
-    navigate('/blog');
+    navigate("/blog");
   }
+
+  const isSubmitting = false;
+
+  console.log("navigation: ", navigation);
 
   return (
     <>
-      {error && <p>{error.message}</p>}
       <NewPostForm
         onCancel={cancelHandler}
-        onSubmit={submitHandler}
-        submitting={isSubmitting}
+        submitting={navigation.state === "submitting"}
       />
     </>
   );
 }
 
 export default NewPostPage;
+
+export async function onSubmitAction({ request }) {
+  const formData = await request.formData();
+  console.log("formData: ", formData);
+  const post = {
+    title: formData.get("title"),
+    body: formData.get("post-text"),
+  };
+  try {
+    await savePost(post);
+  } catch (error) {
+    return error;
+  }
+  return redirect("/blog");
+}
