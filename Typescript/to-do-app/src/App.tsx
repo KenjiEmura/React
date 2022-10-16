@@ -1,18 +1,32 @@
-import Todos from "./components/Todos";
-
+import { useState } from "react";
 import "./App.css";
 
+// Data models
+import Todo from "./models/todo";
+
+// Components
+import Todos from "./components/Todos";
+import NewTodo from "./components/NewTodo";
+
 const App = () => {
-  const message = "It's working!!";
+  const [todos, setTodos] = useState<Todo[]>(DUMMY_TODOS);
+
+  const onAddTodoHandler = (todoText: string) => {
+    setTodos((prevState) => [new Todo(todoText), ...prevState]);
+  };
+
   return (
-    <Todos message={message}>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-    </Todos>
+    <>
+      <NewTodo onAddTodo={onAddTodoHandler} />
+      <Todos items={todos} />
+    </>
   );
 };
 
 export default App;
+
+const DUMMY_TODOS = [
+  new Todo("Practice React"),
+  new Todo("Learn Typescript"),
+  new Todo("Learn Next.js"),
+];
